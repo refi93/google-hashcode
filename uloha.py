@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 import math
+import Queue
 
 from collections import defaultdict
 
@@ -37,15 +38,19 @@ def reserveItemAtWarehouse(item_id, warehouse_id):
 		exit(1)
 	warehouses_items[warehouse_id][item_id] -= 1
 
-def getOrderItemList():
-	item_queues = []
+def getOrderItemQueue():
+	item_queue = Queue()
 	indexes = np.random.permutation(order_count)
 	for i in indexes:
 		address = orders_delivery_addresses[i]
 		for item in order_items[i]:
-			item_queues.append((item, address))
+			item_queue.put((item, address, i))
 	return item_queues
 
+def getEstimateTimeOfTask(drone_r, drone_c, warehouse_id, addr_r, addr_c):
+	warehouse_r = warehouses[warehouse_id]
+	warehouse_c = warehouses[warehouse_id]
+	return getDist(drone_r, drone_c, warehouse_r, warehouse_c) + getDist(warehouse_r, warehouse_c, addr_r, addr_c) + 2
 
 def initDroneQueue():
 	dron_queue = defaultdict(set)
@@ -53,6 +58,30 @@ def initDroneQueue():
 	for i in range(drone_count):
 		dron_queue[0].add((i, start))	
 	return dron_queue
+
+def performTurn():
+	free_drones = drone_queue[current_turn]
+	while free_drones:
+		if (order_item_queue.empty()):
+			return False
+		item_to_process = order_item_queue.get()
+		drone = free_drones.pop()
+		item_id = item_to_process[0]
+		order_id = item_to_process[2]
+		drone_id = drone[0]
+		nearest_warehouse_id = getNearestWarehouseId(drone[1][0], drone[1][1], item_id)
+		delivery_address = item_to_process[1]
+		estimate_task_time = getEstimateTimeOfTask(drone[1][0], drone[1][1], nearest_warehouse_id, delivery_address[0], delivery_address[1])
+
+		if (estimate_task_time > turns - current_turn):
+			return False
+
+		command_list.append("{} L {} {} {}".format(drone_id, nearest_warehouse_id, item_id, 1) )
+		command_list.append("{} D {} {} {}".format(drone_id, order_id, item_id, 1) )
+		
+		reserveItemAtWarehouse(item_id, nearest_warehouse_id)
+		drone_queue[current_turn + estimate_task_time].add((drone[0],delivery_address))
+	return True
 
 
 s = sys.stdin
@@ -62,6 +91,7 @@ rows = int(l[0])
 cols = int(l[1])
 drone_count = int(l[2])
 turns = int(l[3])
+current_turn = 0
 max_payload = int(l[4])
 
 product_count = int(s.readline())
@@ -93,9 +123,16 @@ for i in range(0, order_count):
 	orders_delivery_addresses.append(order_delivery_address)
 	orders_items.append(order_items)
 
-dron_queue = initDroneQueue()
-order_item_list = getOrderItemList()
+drone_queue = initDroneQueue()
+order_item_queue = getOrderItemQueue()
+command_list = []
 
+while performTurn():
+	pass
+
+print len(command_list)
+for command in command_list:
+	print command
 # print (sum_order_count * 1.0 / order_count)
 # print max_order_count
 
