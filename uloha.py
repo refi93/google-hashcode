@@ -2,6 +2,7 @@ import sys
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
+import math
 
 from collections import defaultdict
 
@@ -14,6 +15,26 @@ def getBitmap(rows, cols, warehouses):
 		bitmap[warehouse[0], warehouse[1]] = 1
 
 	return bitmap
+
+def getDist(r1, c1, r2, c2):
+	return math.ceil(math.sqrt((r1 - r2)**2 + (c1 - c2)**2))
+
+def getNearestWarehouseId(r, c, item_id):
+	best_warehouse_dist = 100000000
+	best_warehouse_id = 0 
+	for i in len(warehouses):
+		w = warehouse[i]
+		cur_dist = getDist(r, c, w[0], w[1])
+		if (cur_dist < best_warehouse_dist):
+			best_warehouse_dist = cur_dist
+			best_warehouse_id = i
+
+	return best_warehouse_id
+
+def reserveItemAtWarehouse(item_id, warehouse_id):
+	if warehouses_items[warehouse_id][item_id] == 0:
+		print str(item_id) + " is not present at warehouse " + warehouse_id
+	warehouses_items[warehouse_id][item_id]--
 
 s = sys.stdin
 
