@@ -70,9 +70,23 @@ def performTurn():
 		item_id = item_to_process[0]
 		order_id = item_to_process[2]
 		drone_id = drone[0]
-		nearest_warehouse_id = getNearestWarehouseId(drone[1][0], drone[1][1], item_id)
 		delivery_address = item_to_process[1]
-		estimate_task_time = getEstimateTimeOfTask(drone[1][0], drone[1][1], nearest_warehouse_id, delivery_address[0], delivery_address[1])
+
+		# finding the nearer of two warehouses
+		nearest_warehouse_id = 0
+		estimate_task_time = 10000000
+		nearest_warehouse_id_to_drone = getNearestWarehouseId(drone[1][0], drone[1][1], item_id)
+		estimate_task_time_drone = getEstimateTimeOfTask(drone[1][0], drone[1][1], nearest_warehouse_id_to_drone, delivery_address[0], delivery_address[1])
+
+		nearest_warehouse_id_to_delivery_address = getNearestWarehouseId(delivery_address[0], delivery_address[1], item_id)
+		estimate_task_time_delivery_address = getEstimateTimeOfTask(delivery_address[0], delivery_address[1], nearest_warehouse_id_to_delivery_address, delivery_address[0], delivery_address[1])
+
+		if (estimate_task_time_delivery_address > estimate_task_time_drone):
+			nearest_warehouse_id = nearest_warehouse_id_to_drone
+			estimate_task_time = estimate_task_time_drone
+		else:
+			nearest_warehouse_id = nearest_warehouse_id_to_delivery_address
+			estimate_task_time = estimate_task_time_delivery_address
 
 		if (estimate_task_time > turns - current_turn):
 			return False
