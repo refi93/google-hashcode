@@ -35,7 +35,7 @@ def reserveItemAtWarehouse(item_id, warehouse_id):
 	if warehouses_items[warehouse_id][item_id] == 0:
 		print str(item_id) + " is not present at warehouse " + warehouse_id
 		exit(1)
-	warehouses_items[warehouse_id][item_id]--
+	warehouses_items[warehouse_id][item_id] -= 1
 
 s = sys.stdin
 
@@ -98,3 +98,4 @@ def initDroneQueue():
 	for i in range(drone_count):
 		dron_queue[0].add((i, start))	
 	return dron_queue
+
