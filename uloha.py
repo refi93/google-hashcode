@@ -25,7 +25,7 @@ def getNearestWarehouseId(r, c, item_id):
 	best_warehouse_id = 0 
 	for i in range(len(warehouses)):
 		w = warehouses[i]
-		if (w[item_id] > 0):
+		if (warehouses_items[i][item_id] > 0):
 			cur_dist = getDist(r, c, w[0], w[1])
 			if (cur_dist < best_warehouse_dist):
 				best_warehouse_dist = cur_dist
@@ -129,7 +129,7 @@ order_item_queue = getOrderItemQueue()
 command_list = []
 
 while performTurn():
-	pass
+	current_turn += 1
 
 print len(command_list)
 for command in command_list:
