@@ -5,7 +5,7 @@ import matplotlib.cm as cm
 
 np.set_printoptions(threshold=np.nan)
 
-def getWarehousesBitmap(rows, cols, warehouses):
+def getBitmap(rows, cols, warehouses):
 	bitmap = np.zeros(shape=(rows,cols))
 	for warehouse in warehouses:
 		bitmap[warehouse[0], warehouse[1]] = 1
@@ -52,5 +52,5 @@ for i in range(0, order_count):
 print (sum_order_count * 1.0 / order_count)
 print max_order_count
 
-plt.imsave('warehouses.png', getWarehousesBitmap(rows, cols, warehouses), cmap=cm.gray)
-plt.imsave('orders.png', getWarehousesBitmap(rows, cols, orders_delivery_addresses), cmap=cm.gray)
+plt.imsave('warehouses.png', getBitmap(rows, cols, warehouses), cmap=cm.gray)
+plt.imsave('orders.png', getBitmap(rows, cols, orders_delivery_addresses), cmap=cm.gray)
