@@ -25,10 +25,11 @@ def getNearestWarehouseId(r, c, item_id):
 	best_warehouse_id = 0 
 	for i in range(len(warehouses)):
 		w = warehouses[i]
-		cur_dist = getDist(r, c, w[0], w[1])
-		if (cur_dist < best_warehouse_dist):
-			best_warehouse_dist = cur_dist
-			best_warehouse_id = i
+		if (w[item_id] > 0):
+			cur_dist = getDist(r, c, w[0], w[1])
+			if (cur_dist < best_warehouse_dist):
+				best_warehouse_dist = cur_dist
+				best_warehouse_id = i
 
 	return best_warehouse_id
 
