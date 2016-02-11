@@ -39,14 +39,37 @@ def reserveItemAtWarehouse(item_id, warehouse_id):
 		exit(1)
 	warehouses_items[warehouse_id][item_id] -= 1
 
+
+def orderEasiness(order_id):
+	easiness = 0
+	address = orders_delivery_addresses[order_id]
+	items = orders_items[order_id]
+	for item in items:
+		nw_id = getNearestWarehouseId(address[0], address[1], item)
+		nw_address = warehouses[nw_id] 
+		easiness += 2 * getDist(address[0], address[1], nw_address[0], nw_address[1])
+
+	return easiness
+
 def getOrderItemQueue():
 	item_queue = Queue()
 	indexes = np.random.permutation(order_count)
+	indexes = sorted(list(range(order_count)), key=lambda x: orderEasiness(x))
 	for i in indexes:
 		address = orders_delivery_addresses[i]
 		for item in orders_items[i]:
 			item_queue.put((item, address, i))
 	return item_queue
+
+
+# def getOrderItemQueue():
+# 	item_queue = Queue()
+# 	indexes = np.random.permutation(order_count)
+# 	for i in indexes:
+# 		address = orders_delivery_addresses[i]
+# 		for item in orders_items[i]:
+# 			item_queue.put((item, address, i))
+# 	return item_queue
 
 def getEstimateTimeOfTask(drone_r, drone_c, warehouse_id, addr_r, addr_c):
 	warehouse_r = warehouses[warehouse_id][0]
