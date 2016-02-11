@@ -3,6 +3,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 
+from collections import defaultdict
+
+
 np.set_printoptions(threshold=np.nan)
 
 def getBitmap(rows, cols, warehouses):
@@ -35,6 +38,7 @@ for i in range(0, warehouse_count):
 	warehouses.append(warehouse_coords)
 	warehouses_items.append(warehouse_items)
 
+
 order_count = int(s.readline())
 orders_delivery_addresses = []
 orders_items = []
@@ -49,8 +53,26 @@ for i in range(0, order_count):
 	orders_delivery_addresses.append(order_delivery_address)
 	orders_items.append(order_items)
 
-print (sum_order_count * 1.0 / order_count)
-print max_order_count
+# print (sum_order_count * 1.0 / order_count)
+# print max_order_count
 
-plt.imsave('warehouses.png', getBitmap(rows, cols, warehouses), cmap=cm.gray)
-plt.imsave('orders.png', getBitmap(rows, cols, orders_delivery_addresses), cmap=cm.gray)
+# plt.imsave('warehouses.png', getBitmap(rows, cols, warehouses), cmap=cm.gray)
+# plt.imsave('orders.png', getBitmap(rows, cols, orders_delivery_addresses), cmap=cm.gray)
+
+
+def getOrderItemList():
+	item_queues = []
+	indexes = np.random.permutation(order_count)
+	for i in indexes:
+		address = orders_delivery_addresses[i]
+		for item in order_items[i]:
+			item_queues.append((item, address))
+	return item_queues
+
+
+def initDroneQueue():
+	dron_queue = defaultdict(set)
+	start = warehouses[0]
+	for i in range(drone_count):
+		dron_queue[0].add((i, start))	
+	return dron_queue
