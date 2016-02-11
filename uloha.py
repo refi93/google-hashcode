@@ -37,6 +37,24 @@ def reserveItemAtWarehouse(item_id, warehouse_id):
 		exit(1)
 	warehouses_items[warehouse_id][item_id]--
 
+def getOrderItemList():
+	item_queues = []
+	indexes = np.random.permutation(order_count)
+	for i in indexes:
+		address = orders_delivery_addresses[i]
+		for item in order_items[i]:
+			item_queues.append((item, address))
+	return item_queues
+
+
+def initDroneQueue():
+	dron_queue = defaultdict(set)
+	start = warehouses[0]
+	for i in range(drone_count):
+		dron_queue[0].add((i, start))	
+	return dron_queue
+
+
 s = sys.stdin
 
 l = s.readline().split()
@@ -75,26 +93,11 @@ for i in range(0, order_count):
 	orders_delivery_addresses.append(order_delivery_address)
 	orders_items.append(order_items)
 
+dron_queue = initDroneQueue()
+order_item_list = getOrderItemList()
+
 # print (sum_order_count * 1.0 / order_count)
 # print max_order_count
 
 # plt.imsave('warehouses.png', getBitmap(rows, cols, warehouses), cmap=cm.gray)
 # plt.imsave('orders.png', getBitmap(rows, cols, orders_delivery_addresses), cmap=cm.gray)
-
-
-def getOrderItemList():
-	item_queues = []
-	indexes = np.random.permutation(order_count)
-	for i in indexes:
-		address = orders_delivery_addresses[i]
-		for item in order_items[i]:
-			item_queues.append((item, address))
-	return item_queues
-
-
-def initDroneQueue():
-	dron_queue = defaultdict(set)
-	start = warehouses[0]
-	for i in range(drone_count):
-		dron_queue[0].add((i, start))	
-	return dron_queue
