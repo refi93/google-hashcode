@@ -12,6 +12,9 @@ def getBitmap(rows, cols, warehouses):
 
 	return bitmap
 
+def getNearestWarehouseId(origin_r, origin_c, item_id):
+	return 0
+
 s = sys.stdin
 
 l = s.readline().split()
