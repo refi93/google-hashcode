@@ -79,7 +79,7 @@ def performTurn():
 		estimate_task_time_drone = getEstimateTimeOfTask(drone[1][0], drone[1][1], nearest_warehouse_id_to_drone, delivery_address[0], delivery_address[1])
 
 		nearest_warehouse_id_to_delivery_address = getNearestWarehouseId(delivery_address[0], delivery_address[1], item_id)
-		estimate_task_time_delivery_address = getEstimateTimeOfTask(delivery_address[0], delivery_address[1], nearest_warehouse_id_to_delivery_address, delivery_address[0], delivery_address[1])
+		estimate_task_time_delivery_address = getEstimateTimeOfTask(drone[1][0], drone[1][1], nearest_warehouse_id_to_delivery_address, delivery_address[0], delivery_address[1])
 
 		if (estimate_task_time_delivery_address > estimate_task_time_drone):
 			nearest_warehouse_id = nearest_warehouse_id_to_drone
