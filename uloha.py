@@ -3,8 +3,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 import math
-import Queue
-
+# import Queue
+from Queue import Queue
 from collections import defaultdict
 
 
@@ -23,8 +23,8 @@ def getDist(r1, c1, r2, c2):
 def getNearestWarehouseId(r, c, item_id):
 	best_warehouse_dist = 100000000
 	best_warehouse_id = 0 
-	for i in len(warehouses):
-		w = warehouse[i]
+	for i in range(len(warehouses)):
+		w = warehouses[i]
 		cur_dist = getDist(r, c, w[0], w[1])
 		if (cur_dist < best_warehouse_dist):
 			best_warehouse_dist = cur_dist
@@ -34,7 +34,7 @@ def getNearestWarehouseId(r, c, item_id):
 
 def reserveItemAtWarehouse(item_id, warehouse_id):
 	if warehouses_items[warehouse_id][item_id] == 0:
-		print str(item_id) + " is not present at warehouse " + warehouse_id
+		print str(item_id) + " is not present at warehouse " + str(warehouse_id)
 		exit(1)
 	warehouses_items[warehouse_id][item_id] -= 1
 
@@ -43,20 +43,20 @@ def getOrderItemQueue():
 	indexes = np.random.permutation(order_count)
 	for i in indexes:
 		address = orders_delivery_addresses[i]
-		for item in order_items[i]:
+		for item in orders_items[i]:
 			item_queue.put((item, address, i))
-	return item_queues
+	return item_queue
 
 def getEstimateTimeOfTask(drone_r, drone_c, warehouse_id, addr_r, addr_c):
-	warehouse_r = warehouses[warehouse_id]
-	warehouse_c = warehouses[warehouse_id]
+	warehouse_r = warehouses[warehouse_id][0]
+	warehouse_c = warehouses[warehouse_id][1]
 	return getDist(drone_r, drone_c, warehouse_r, warehouse_c) + getDist(warehouse_r, warehouse_c, addr_r, addr_c) + 2
 
 def initDroneQueue():
 	dron_queue = defaultdict(set)
 	start = warehouses[0]
 	for i in range(drone_count):
-		dron_queue[0].add((i, start))	
+		dron_queue[0].add((i, tuple(start)))	
 	return dron_queue
 
 def performTurn():
@@ -80,7 +80,7 @@ def performTurn():
 		command_list.append("{} D {} {} {}".format(drone_id, order_id, item_id, 1) )
 		
 		reserveItemAtWarehouse(item_id, nearest_warehouse_id)
-		drone_queue[current_turn + estimate_task_time].add((drone[0],delivery_address))
+		drone_queue[current_turn + estimate_task_time].add((drone[0], tuple(delivery_address)))
 	return True
 
 
